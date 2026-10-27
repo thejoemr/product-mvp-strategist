@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Valida el único entregable Markdown de la auditoría. No modifica archivos."""
+"""Valida la referencia detallada del paquete; no se ejecuta durante la auditoría conversacional.
+
+Herramienta opcional de mantenimiento para ejemplos ya guardados, no un requisito
+para las respuestas del agente. No modifica archivos.
+"""
 import re
 import sys
 from pathlib import Path
@@ -16,7 +20,7 @@ REQUIRED_SECTIONS = [
 def validate(path):
     path = Path(path)
     if not path.is_file():
-        return [f'No existe el informe Markdown: {path}']
+        return [f'No existe la referencia Markdown: {path}']
     md = path.read_text(encoding='utf-8')
     errors = []
     if not md.startswith('# '):
@@ -75,7 +79,7 @@ def validate(path):
                     errors.append(f'{feature_id}: acción distinta entre tabla y ficha')
 
     if re.search(r'\.csv\b|feature-actions\.csv', md, re.I):
-        errors.append('El entregable no debe depender de un CSV')
+        errors.append('La referencia no debe depender de un CSV')
     return errors
 
 

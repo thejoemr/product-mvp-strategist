@@ -30,6 +30,14 @@ Para hipótesis críticas, especifica segmento, pregunta, test, umbral observabl
 
 ## Salida
 
-Redacta un único archivo Markdown basado en `.claude/product-mvp/templates/feature-mvp-plan.md`: cada F-ID debe estar en la tabla principal y en su ficha individual. Ordena por prioridad, incluye ruta de monetización y un roadmap reducido. Integra en ese archivo **fuentes de mercado, fechas y grado de certeza**; no generes un CSV ni documentos adicionales.
+Devuelve en el chat una síntesis del MVP candidato o acordado, la ruta de monetización, costos conocidos y experimentos prioritarios. Vincula F-IDs, fuentes fechadas y certeza; diferencia recomendaciones de acuerdos del usuario. Usa ${CLAUDE_PLUGIN_ROOT}/product-mvp/templates/feature-mvp-plan.md como guía conversacional. No crees archivos. Presenta alternativas y la siguiente decisión para que el usuario y el agente principal acuerden cómo continuar.
 
 Lee [references/revenue-gates.md](references/revenue-gates.md).
+
+## Intercambio en conversación
+
+Trabaja en modo lectura: no crees ni edites archivos, reportes o notas persistentes, ni siquiera temporales. Devuelve el análisis como texto en el chat al agente que te invocó o al usuario si trabajas en la conversación principal.
+
+Recibe la pregunta concreta, el contexto y los acuerdos previos. Distingue hechos, hipótesis y recomendaciones; una propuesta del especialista no es un acuerdo del usuario. Devuelve hallazgos con F-IDs, evidencia, cobertura, alternativas y la decisión pendiente que importa para continuar. Si falta información, señala la pregunta al agente principal; no bloquees un subagente esperando hablar con el usuario.
+
+En la conversación principal, presenta primero lo que permita decidir, pregunta por la elección relevante y espera la respuesta antes de asumirla. Conserva acuerdos y pendientes en el contexto y amplía el detalle por bloques o cuando el usuario lo solicite.

@@ -6,9 +6,10 @@ permissions:
   contents: read
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         node: ['18', '20', '22']
     steps:
       - uses: actions/checkout@v4
@@ -22,23 +23,36 @@ jobs:
       - run: npm run validate
       - run: npm pack --dry-run
 
-  npx-install-smoke:
-    needs: test
+  native-plugin:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install directly from published GitHub repo via npx
+      - run: npm install --global @anthropic-ai/claude-code@2.1.309
+      - run: npm run validate:plugin
+      - name: Install native plugin with an isolated Claude configuration
+        env:
+          CLAUDE_CONFIG_DIR: ${{ runner.temp }}/claude-plugin-smoke
         run: |
-          mkdir -p "$RUNNER_TEMP/mvp-audit-smoke"
-          cd "$RUNNER_TEMP/mvp-audit-smoke"
-          npx --yes github:thejoemr/product-mvp-strategist init
-          test -f .claude/skills/product-mvp-audit/SKILL.md
-          npx --yes github:thejoemr/product-mvp-strategist doctor
-      - name: Verify explicit npm exec invocation
+          claude plugin install product-mvp-strategist --marketplace "$GITHUB_WORKSPACE" --json
+          claude plugin details product-mvp-strategist@product-mvp-tools
+
+  package-install-smoke:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install the current checkout's package
         run: |
-          mkdir -p "$RUNNER_TEMP/explicit-smoke"
-          cd "$RUNNER_TEMP/explicit-smoke"
-          npm exec --yes --package=github:thejoemr/product-mvp-strategist -- product-mvp-strategist init
+          MVP_TARBALL="$RUNNER_TEMP/$(npm pack --silent --pack-destination "$RUNNER_TEMP")"
+          mkdir -p "$RUNNER_TEMP/mvp-package-smoke"
+          cd "$RUNNER_TEMP/mvp-package-smoke"
+          npm exec --yes --package="$MVP_TARBALL" -- product-mvp-strategist init
           test -f .claude/agents/product-mvp-strategist.md
+          test -f .claude/skills/product-mvp-audit/SKILL.md
+          npm exec --yes --package="$MVP_TARBALL" -- product-mvp-strategist doctor

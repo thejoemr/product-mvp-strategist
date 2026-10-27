@@ -1,61 +1,38 @@
-# Publicar Product MVP Strategist
+# Publicar el plugin nativo
 
-El código fuente es un proyecto listo para un repositorio GitHub **independiente y público**. Evita publicarlo como subcarpeta de un repositorio privado que contenga aplicaciones, datos o secretos: `npx` desde GitHub instala el **repositorio completo**, no una subcarpeta arbitraria.
+El marketplace vive en .claude-plugin/marketplace.json y lista el plugin de plugins/product-mvp-strategist/. Las definiciones se mantienen solo en ese plugin; el instalador anterior adapta la misma fuente.
 
-## 1. Crear el repositorio y subirlo
-
-Requisitos: Git, GitHub CLI (`gh`) con sesión iniciada, permisos para crear repositorios bajo la cuenta y esta carpeta descomprimida de forma independiente.
+## Verificar antes de subir
 
 ```bash
-cd product-mvp-strategist
-git init -b main
-git add .
-git commit -m "feat: initial Claude Code MVP strategist release"
-gh repo create thejoemr/product-mvp-strategist --public --source=. --remote=origin --push
-```
-
-Si el repositorio ya existe vacío, utiliza en su lugar:
-
-```bash
-git remote add origin https://github.com/thejoemr/product-mvp-strategist.git
-git push -u origin main
-```
-
-No incluyas credenciales en el repositorio ni en el paquete. Verifica la visibilidad **Public** y la integridad de la carpeta `.claude/` en GitHub.
-
-## 2. Probar instalación desde GitHub
-
-En un proyecto de prueba distinto al del harness:
-
-```bash
-npx --yes github:thejoemr/product-mvp-strategist init --dry-run
-npx --yes github:thejoemr/product-mvp-strategist init
-npx --yes github:thejoemr/product-mvp-strategist doctor
-```
-
-Después, abre Claude Code y ejecuta `/product-mvp-audit`.
-
-## 3. Publicación npm (opcional)
-
-`npx github:thejoemr/product-mvp-strategist` funciona sin publicar en npm, si el repositorio GitHub es público. Para habilitar el comando corto `npx product-mvp-strategist@latest`, primero debes tener permiso para publicar el nombre en npm. Comprueba que esté disponible:
-
-```bash
-npm view product-mvp-strategist version
-npm login
 npm test
 npm run validate
-npm publish --access public
+npm run validate:plugin
+npm pack --dry-run
 ```
 
-**No ejecutes `npm publish` si el nombre pertenece a otra persona.** No afirmes disponibilidad npm antes de comprobar el registro.
+La validación nativa requiere Claude Code. Los comandos de análisis no ejecutan estos validadores ni crean archivos de auditoría.
 
-## 4. Etiquetado y mantenimiento
-
-Cuando el instalador, pruebas y configuración se hayan validado en Claude Code:
+Para probar sin instalar:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+claude --plugin-dir ./plugins/product-mvp-strategist
 ```
 
-Para futuras versiones, actualiza `package.json`, ejecuta las pruebas, verifica comportamiento `update` sin perder personalizaciones y publica una nueva etiqueta.
+En la sesión, ejecutar /product-mvp-strategist:product-mvp-audit. Verificar descubrimiento de las seis skills y seis agentes, carga de referencias desde el plugin, devolución interna de los especialistas y continuidad del diálogo sin reportes en disco.
+
+## Publicar una actualización
+
+1. Cambiar la versión en package.json, plugins/product-mvp-strategist/.claude-plugin/plugin.json y la entrada de .claude-plugin/marketplace.json.
+2. Ejecutar las verificaciones y probar una instalación nativa aislada.
+3. Subir una rama y abrir un Pull Request contra main. Integrar mediante el flujo de revisión del repositorio.
+4. Tras integrar, usar el origen thejoemr/product-mvp-strategist sin sufijo. Durante las pruebas, especificar #nombre-de-rama en el origen del marketplace.
+5. Actualizar los ejemplos de instalación cuando cambie la rama de distribución. Los usuarios actualizan marketplace y plugin desde /plugin.
+
+No hace falta publicar en npm para distribuir el plugin. No se requiere una API key ni instalar un servidor MCP.
+
+## Migración del instalador anterior
+
+El instalador conserva su manifiesto de propiedad y sus controles de conflictos. Los usuarios pueden retirar la copia anterior con uninstall antes de adoptar el plugin; nunca borrar automáticamente archivos .claude/ ni configuraciones ajenas.
+
+La compatibilidad npm se comprueba con npm pack --dry-run y una instalación en un proyecto temporal. La publicación npm, si se desea, es independiente del marketplace y requiere acceso al nombre del paquete en el registro.

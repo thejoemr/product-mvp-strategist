@@ -21,3 +21,11 @@ description: Reconstruye desde un repositorio de software el inventario de featu
 **Límites:** solo lectura de código, pruebas y repositorio. No instales dependencias ni ejecutes tests que puedan escribir datos o llamar servicios. Ignora secretos. Para señales de negocio, cede a `product-business-core`.
 
 Revisa las heurísticas de [references/coverage.md](references/coverage.md).
+
+## Intercambio en conversación
+
+Trabaja en modo lectura: no crees ni edites archivos, reportes o notas persistentes, ni siquiera temporales. Devuelve el análisis como texto en el chat al agente que te invocó o al usuario si trabajas en la conversación principal.
+
+Recibe la pregunta concreta, el contexto y los acuerdos previos. Distingue hechos, hipótesis y recomendaciones; una propuesta del especialista no es un acuerdo del usuario. Devuelve hallazgos con F-IDs, evidencia, cobertura, alternativas y la decisión pendiente que importa para continuar. Si falta información, señala la pregunta al agente principal; no bloquees un subagente esperando hablar con el usuario.
+
+En la conversación principal, presenta primero lo que permita decidir, pregunta por la elección relevante y espera la respuesta antes de asumirla. Conserva acuerdos y pendientes en el contexto y amplía el detalle por bloques o cuando el usuario lo solicite.

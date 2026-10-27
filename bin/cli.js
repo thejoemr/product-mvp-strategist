@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const PAYLOAD_ROOT = path.join(PACKAGE_ROOT, '.claude');
+const PAYLOAD_ROOT = path.join(PACKAGE_ROOT, 'plugins', 'product-mvp-strategist');
 const MANIFEST_REL = '.claude/product-mvp/.install-manifest.json';
 const MANIFEST_VERSION = 1;
 const OWNED = [
@@ -35,8 +35,18 @@ function listFiles(dir, prefix) {
 const PACKAGE_FILES = [
   ...OWNED,
   ...listFiles(path.join(PAYLOAD_ROOT, 'skills'), '.claude/skills'),
-  ...listFiles(path.join(PAYLOAD_ROOT, 'product-mvp'), '.claude/product-mvp')
+  ...listFiles(path.join(PAYLOAD_ROOT, 'product-mvp'), '.claude/product-mvp'),
+  ...listFiles(path.join(PACKAGE_ROOT, '.claude/product-mvp/scripts'), '.claude/product-mvp/scripts')
 ]; 
+// Keep the legacy installer compatible while the native plugin is the only source.
+function packageContent(rel) {
+  const source = rel.startsWith('.claude/product-mvp/scripts/')
+    ? path.join(PACKAGE_ROOT, rel)
+    : path.join(PAYLOAD_ROOT, rel.slice('.claude/'.length));
+  return fs.readFileSync(source, 'utf8')
+    .replaceAll('${CLAUDE_PLUGIN_ROOT}/', '.claude/')
+    .replaceAll('product-mvp-strategist:', '');
+}
 // Paths are only generated from a fixed, audited payload. Never follow symlinks in a target.
 function checkNoSymlinks(root, rel) {
   let current = root;
@@ -108,9 +118,8 @@ function install({target,force,dryRun,action}) {
   const newEntries={};
   for(const rel of PACKAGE_FILES){
     checkNoSymlinks(target,rel);
-    const source=path.join(PACKAGE_ROOT,rel);
     const destination=path.join(target,rel);
-    const next=readFileDigest(source);
+    const next=sha256(packageContent(rel));
     newEntries[rel]=next;
     if(!fs.existsSync(destination)){changes.push({rel,kind:'add'});continue;}
     if(!fs.lstatSync(destination).isFile()) fail(`No es archivo regular: ${rel}`);
@@ -133,7 +142,7 @@ function install({target,force,dryRun,action}) {
     if(kind==='backup+replace') console.log(`  respaldo: ${backupTarget(target,rel)}`);
     const file=path.join(target,rel);
     fs.mkdirSync(path.dirname(file),{recursive:true});
-    fs.copyFileSync(path.join(PACKAGE_ROOT,rel),file);
+    fs.writeFileSync(file,packageContent(rel),'utf8');
   }
   // Remove stale previously-installed files only if unchanged. Never remove user edits during upgrades.
   for (const [rel,old] of Object.entries(previous?.files||{})) {
