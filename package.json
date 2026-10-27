@@ -1,0 +1,48 @@
+{
+  "name": "product-mvp-strategist",
+  "version": "1.1.1",
+  "description": "Claude Code multi-agent toolkit to reduce a codebase to a commercially viable MVP, feature by feature.",
+  "type": "module",
+  "bin": {
+    "product-mvp-strategist": "./bin/cli.js"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "files": [
+    "bin/",
+    ".claude/agents/",
+    ".claude/skills/",
+    ".claude/product-mvp/templates/",
+    ".claude/product-mvp/scripts/*.py",
+    ".claude/product-mvp/examples/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js && python3 -m unittest discover -s .claude/product-mvp/scripts -p 'test_*.py'",
+    "validate": "python3 .claude/product-mvp/scripts/validate_package.py . && python3 .claude/product-mvp/scripts/validate_feature_plan.py .claude/product-mvp/examples/feature-mvp-plan.example.md",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "keywords": [
+    "claude-code",
+    "ai-agents",
+    "product-strategy",
+    "mvp",
+    "skills",
+    "product-discovery",
+    "business-analysis"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thejoemr/product-mvp-strategist.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thejoemr/product-mvp-strategist/issues"
+  },
+  "homepage": "https://github.com/thejoemr/product-mvp-strategist#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}

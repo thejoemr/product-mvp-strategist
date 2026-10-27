@@ -1,0 +1,8 @@
+node_modules/
+*.tgz
+.DS_Store
+__pycache__/
+*.pyc
+coverage/
+docs/product/mvp/feature-mvp-plan.md
+.agents/docs/audits/mvp/feature-mvp-plan.md
