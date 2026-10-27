@@ -1,6 +1,6 @@
 {
   "name": "product-mvp-strategist",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Claude Code multi-agent toolkit to reduce a codebase to a commercially viable MVP, feature by feature.",
   "type": "module",
   "bin": {

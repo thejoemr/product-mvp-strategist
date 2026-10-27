@@ -21,3 +21,24 @@ jobs:
       - run: npm test
       - run: npm run validate
       - run: npm pack --dry-run
+
+  npx-install-smoke:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install directly from published GitHub repo via npx
+        run: |
+          mkdir -p "$RUNNER_TEMP/mvp-audit-smoke"
+          cd "$RUNNER_TEMP/mvp-audit-smoke"
+          npx --yes github:thejoemr/product-mvp-strategist init
+          test -f .claude/skills/product-mvp-audit/SKILL.md
+          npx --yes github:thejoemr/product-mvp-strategist doctor
+      - name: Verify explicit npm exec invocation
+        run: |
+          mkdir -p "$RUNNER_TEMP/explicit-smoke"
+          cd "$RUNNER_TEMP/explicit-smoke"
+          npm exec --yes --package=github:thejoemr/product-mvp-strategist -- product-mvp-strategist init
+          test -f .claude/agents/product-mvp-strategist.md

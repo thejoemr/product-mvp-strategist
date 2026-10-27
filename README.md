@@ -6,7 +6,7 @@
 
 ## Instalación con `npx`
 
-**Desde GitHub, una vez publicado el repositorio público `thejoemr/product-mvp-strategist`:**
+**Desde GitHub (disponible ahora):**
 
 ```bash
 npx --yes github:thejoemr/product-mvp-strategist init
@@ -18,10 +18,16 @@ npx --yes github:thejoemr/product-mvp-strategist init
 npx --yes product-mvp-strategist@latest init
 ```
 
-Los comandos anteriores requieren **publicación previa**; no representan enlaces activos mientras el repositorio o paquete no estén publicados. Para instalar desde una copia local ya descargada:
+El primer comando utiliza el repositorio público de GitHub y requiere **Node.js, npm y Git instalados**. No necesita una publicación en el registro npm. El segundo comando **todavía no está disponible** hasta que se publique en npm. Para instalar desde una copia local ya descargada:
 
 ```bash
 node bin/cli.js init
+```
+
+Si `npx github:...` no funciona en tu entorno, utiliza la forma explícita de npm:
+
+```bash
+npm exec --yes --package=github:thejoemr/product-mvp-strategist -- product-mvp-strategist init
 ```
 
 Ejecuta el instalador **desde la raíz del proyecto que quieres auditar**. Requiere Node.js 18.18 o posterior y Claude Code. El instalador no necesita dependencias de npm, no modifica `CLAUDE.md` ni `settings.json`, ni ejecuta comandos sobre el código del producto.
