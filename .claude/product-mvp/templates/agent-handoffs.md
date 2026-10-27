@@ -1,6 +1,6 @@
 # Contratos de intercambio entre especialistas
 
-Los especialistas no inventan decisiones de otros dominios. El orquestador recibe artefactos conceptuales (tablas en sus respuestas, no necesariamente archivos) con estas estructuras mínimas:
+Los especialistas no inventan decisiones de otros dominios. El orquestador recibe artefactos conceptuales (tablas en sus respuestas, nunca archivos) con estas estructuras mínimas:
 
 ## A. feature_cartographer → business_core_analyst y feature_scope_strategist
 
@@ -32,8 +32,14 @@ Si una poda rompe invariantes, la estrategia se vuelve `VALIDAR` o `MANTENER`, c
 
 ## Reglas de reconciliación
 
-1. El orquestador asigna una decisión **única** por `feature_id`; documenta desacuerdos relevantes en ficha.
+1. El orquestador consolida una recomendación por `feature_id` y expone desacuerdos relevantes en el chat. Solo el usuario convierte una propuesta en acuerdo.
 2. Prioridad del conflicto: garantías y obligaciones comprobadas → valor nuclear → compromisos comerciales verificados → demanda de mercado transferible → hipótesis reversibles.
 3. Si mercado no confirma y el retiro sería irreversible, marca `VALIDAR` o propone reducir tras un piloto.
 4. No hagas depender un recorte de una feature de una variante eliminada en otra: verifica caminos punta a punta con grafo de dependencias.
-5. Auditoría completa: IDs del inventario = IDs de la tabla del Markdown = IDs de las fichas individuales del Markdown.
+5. Auditoría completa: cada ID inventariado tiene una recomendación trazable en el contexto. Presentar por bloques no autoriza omitir features ni afirmar cobertura completa si quedan pendientes.
+
+## Contexto común de cada solicitud
+
+Comparte pregunta y alcance de la etapa, segmento/región, tesis elegida o hipótesis, acuerdos y pendientes del usuario, F-IDs aplicables y evidencia ya obtenida. El especialista devuelve texto, no rutas de entregables.
+
+El agente principal presenta al usuario las conclusiones que requieren elección y espera su respuesta. Un subagente devuelve las preguntas al principal sin intentar abrir un diálogo propio. Conserva por F-ID el estado PROPUESTO, ACORDADO, DESCARTADO o PENDIENTE dentro de la conversación. Ningún intercambio requiere archivos, carpetas ni validadores de informes.

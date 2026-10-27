@@ -20,8 +20,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/*.test.js && python3 -m unittest discover -s .claude/product-mvp/scripts -p 'test_*.py'",
-    "validate": "python3 .claude/product-mvp/scripts/validate_package.py . && python3 .claude/product-mvp/scripts/validate_feature_plan.py .claude/product-mvp/examples/feature-mvp-plan.example.md",
+    "test": "node --test test/*.test.js && node bin/run-python.js -m unittest discover -s .claude/product-mvp/scripts -p test_*.py",
+    "validate": "node bin/run-python.js .claude/product-mvp/scripts/validate_package.py . && node bin/run-python.js .claude/product-mvp/scripts/validate_feature_plan.py .claude/product-mvp/examples/feature-mvp-plan.example.md",
     "pack:dry": "npm pack --dry-run"
   },
   "keywords": [

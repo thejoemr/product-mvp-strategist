@@ -55,13 +55,21 @@ def validate(root):
         if fields['_skills'] != expected_skills: problems.append(f'{path}: skills deben ser {expected_skills}; se encontró {fields["_skills"]}')
         raw_tools = fields.get('tools','')
         tools = {t.strip() for t in re.split(r',\s*(?![^()]*\))', raw_tools)}
+        allowed_tools = {'Read', 'Glob', 'Grep'}
         if name == 'product-mvp-strategist':
-            if 'Write' not in tools or not any(t.startswith('Agent(') or t=='Agent' for t in tools): problems.append(f'{path}: orquestador requiere Agent + Write')
-            if 'Edit' in tools: problems.append(f'{path}: no permitir Edit')
+            allowed_tools.update({'WebSearch', 'WebFetch'})
+            allowed_tools.add('Agent(feature-cartographer, business-core-analyst, market-value-researcher, feature-scope-strategist, unit-economics-reviewer)')
+            if not any(t.startswith('Agent(') for t in tools):
+                problems.append(f'{path}: orquestador requiere especialistas internos con Agent')
         else:
-            if tools & {'Write','Edit','Agent'}: problems.append(f'{path}: especialista con privilegio de escritura/delegación')
+            if name == 'market-value-researcher':
+                allowed_tools.update({'WebSearch', 'WebFetch'})
             if name == 'market-value-researcher' and not {'WebSearch','WebFetch'}.issubset(tools):
                 problems.append(f'{path}: faltan herramientas de investigación web')
+        if tools - allowed_tools:
+            problems.append(f'{path}: herramientas fuera del contrato de solo lectura: {tools - allowed_tools}')
+        if not {'Read', 'Glob', 'Grep'}.issubset(tools):
+            problems.append(f'{path}: faltan herramientas de lectura del repositorio')
     actual_skills = {p.parent.name for p in skill_dir.glob('*/SKILL.md')}
     if actual_skills != SKILLS: problems.append(f'Skills: esperadas {SKILLS}, encontradas {actual_skills}')
     for name in SKILLS:
@@ -78,9 +86,11 @@ def validate(root):
         for target in re.findall(r'\]\((references/[^)]+)\)', body):
             if not (path.parent / target).is_file(): problems.append(f'{path}: referencia inexistente {target}')
         if name == 'product-mvp-audit':
-            expected = {'context':'fork','agent':'product-mvp-strategist','background':'false','disable-model-invocation':'true'}
-            for key, val in expected.items():
-                if fields.get(key) != val: problems.append(f'{path}: {key} debe ser {val}')
+            if fields.get('disable-model-invocation') != 'true':
+                problems.append(f'{path}: disable-model-invocation debe ser true')
+        for key in ('context', 'agent', 'background'):
+            if key in fields:
+                problems.append(f'{path}: {key} separa la skill de la conversación principal')
     required=[
         'README.md', '.claude/product-mvp/templates/feature-mvp-plan.md',
         '.claude/product-mvp/examples/feature-mvp-plan.example.md',

@@ -76,7 +76,7 @@ test('force backs up conflicts and never discards modified files without backup'
 test('injection defenses refuse symlink target paths',t=>{
   const dir=sandbox(t);const other=sandbox(t);
   fs.mkdirSync(path.join(dir,'.claude'),{recursive:true});
-  fs.symlinkSync(other,path.join(dir,'.claude','skills'),'dir');
+  fs.symlinkSync(other,path.join(dir,'.claude','skills'),process.platform==='win32'?'junction':'dir');
   const r=run(dir,'init');
   assert.equal(r.status,1);
   assert.match(r.stderr,/simbólico|symlink/);

@@ -1,6 +1,8 @@
 ## Auditoría de producto MVP (solo bajo petición)
 
-Para realizar una auditoría comercial de todas las features, invoca `/product-mvp-audit` o delega al agente `product-mvp-strategist`.
-No modificar código, modelos de datos ni infraestructura como parte de la auditoría. Generar únicamente `docs/product/mvp/feature-mvp-plan.md` o, si existe documentación canónica bajo `.agents/docs/`, `.agents/docs/audits/mvp/feature-mvp-plan.md`. Integrar todas las fuentes y decisiones en ese Markdown; nunca generar CSV.
-El análisis de mercado debe usar fuentes online verificables con URLs y fecha; si no hay acceso, marcarlo sin inventar fuentes.
-Todo recorte debe conservar el núcleo pagable del producto y sus garantías de seguridad, privacidad y cumplimiento.
+Invoca /product-mvp-audit para analizar el producto en la conversación principal, o inicia Claude Code con claude --agent product-mvp-strategist para conversar con el agente durante la sesión.
+También puedes delegar una pregunta concreta a product-mvp-strategist: devuelve hallazgos internos al principal para que este los discuta con el usuario.
+
+La auditoría es de solo lectura y su salida es texto en el chat. No crear archivos, reportes, bitácoras ni carpetas; no modificar código, datos ni infraestructura.
+Presentar hallazgos con evidencia, propuestas de alcance mínimo, alternativas y una pregunta concreta para acordar el siguiente paso. Distinguir propuestas, acuerdos y pendientes, y no asumir aprobación por silencio.
+Usar fuentes online verificables con URL y fecha; si no hay acceso, señalarlo sin inventar evidencia. Conservar el núcleo pagable y sus garantías.

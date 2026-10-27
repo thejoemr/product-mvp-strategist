@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+import shutil
 from pathlib import Path
 
 from validate_feature_plan import validate as validate_markdown
@@ -13,6 +14,34 @@ class PackageTests(unittest.TestCase):
     def test_package(self):
         self.assertEqual([], validate_package(ROOT))
 
+    def package_variant(self, relative, before, after):
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory)
+            shutil.copytree(ROOT / '.claude', copy / '.claude')
+            shutil.copyfile(ROOT / 'README.md', copy / 'README.md')
+            target = copy / relative
+            content = target.read_text(encoding='utf-8')
+            self.assertIn(before, content)
+            target.write_text(content.replace(before, after, 1), encoding='utf-8')
+            return validate_package(copy)
+
+    def test_agents_reject_write_and_shell_tools(self):
+        for agent in ('product-mvp-strategist', 'feature-cartographer'):
+            for tool in ('Write', 'Edit', 'Bash', 'PowerShell', 'NotebookEdit'):
+                with self.subTest(agent=agent, tool=tool):
+                    issues = self.package_variant(
+                        f'.claude/agents/{agent}.md', 'tools: Read,', f'tools: {tool}, Read,')
+                    self.assertTrue(any('contrato de solo lectura' in issue for issue in issues))
+
+    def test_skills_stay_in_main_conversation(self):
+        for skill in ('product-mvp-audit', 'commercial-mvp-design'):
+            for field, value in (('context', 'fork'), ('agent', 'product-mvp-strategist'), ('background', 'false')):
+                with self.subTest(skill=skill, field=field):
+                    issues = self.package_variant(
+                        f'.claude/skills/{skill}/SKILL.md',
+                        f'name: {skill}\n', f'name: {skill}\n{field}: {value}\n')
+                    self.assertTrue(any('conversación principal' in issue for issue in issues))
+
     def test_valid_sample_markdown(self):
         self.assertEqual([], validate_markdown(SAMPLE))
 
@@ -23,32 +52,32 @@ class PackageTests(unittest.TestCase):
             return validate_markdown(file)
 
     def test_missing_market_evidence(self):
-        s = SAMPLE.read_text()
+        s = SAMPLE.read_text(encoding='utf-8')
         modified = s.replace('SIN_EVIDENCIA: validar con compradores', 'algo sin fuente')
         self.assertTrue(any('mercado sin enlace' in issue for issue in self.validate_variant(modified)))
 
     def test_verified_market_requires_url(self):
-        s = SAMPLE.read_text().replace('SIN_EVIDENCIA: validar con compradores','FUENTE_VERIFICADA sin link')
+        s = SAMPLE.read_text(encoding='utf-8').replace('SIN_EVIDENCIA: validar con compradores','FUENTE_VERIFICADA sin link')
         self.assertTrue(any('sin URL' in issue for issue in self.validate_variant(s)))
 
     def test_report_action_mismatch(self):
-        s = SAMPLE.read_text().replace('### F-001 · Reportes · REDUCIR','### F-001 · Reportes · MANTENER')
+        s = SAMPLE.read_text(encoding='utf-8').replace('### F-001 · Reportes · REDUCIR','### F-001 · Reportes · MANTENER')
         self.assertTrue(any('acción distinta' in issue for issue in self.validate_variant(s)))
 
     def test_missing_feature_details(self):
-        s = SAMPLE.read_text().replace('### F-001 · Reportes · REDUCIR','### F-002 · Reportes · REDUCIR')
+        s = SAMPLE.read_text(encoding='utf-8').replace('### F-001 · Reportes · REDUCIR','### F-002 · Reportes · REDUCIR')
         issues = self.validate_variant(s)
         self.assertTrue(any('Falta ficha detallada: F-001' in issue for issue in issues))
         self.assertTrue(any('Ficha sin entrada en tabla: F-002' in issue for issue in issues))
 
     def test_duplicate_feature_table(self):
-        s = SAMPLE.read_text()
+        s = SAMPLE.read_text(encoding='utf-8')
         row = '| F-001 | Generación de reportes | Reportes con plantillas, filtros, envíos `[ejemplo/no verificable]` | Mantener reporte básico y posponer plantillas | REDUCIR | SIN_EVIDENCIA: validar con compradores | Menor complejidad operativa, HIPÓTESIS | P0 |'
         self.assertTrue(row in s)
         self.assertTrue(any('duplicado' in issue for issue in self.validate_variant(s.replace(row,row+'\n'+row))))
 
     def test_csv_reference_not_allowed(self):
-        s = SAMPLE.read_text() + '\nTambién genera feature-actions.csv\n'
+        s = SAMPLE.read_text(encoding='utf-8') + '\nTambién genera feature-actions.csv\n'
         self.assertTrue(any('CSV' in issue for issue in self.validate_variant(s)))
 
 

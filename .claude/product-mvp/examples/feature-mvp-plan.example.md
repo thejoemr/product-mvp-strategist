@@ -1,6 +1,8 @@
-# Auditoría de producto → MVP comercializable
+# Ejemplo de respuesta detallada en el chat
 
-**Ruta elegida y motivo:** `docs/product/mvp/feature-mvp-plan.md` — documentación de producto; ejemplo no derivado de un producto real.
+> Referencia ficticia del paquete para quien solicite detalle completo en la conversación; no es un archivo que deba generar la auditoría. En un intercambio normal, presentar solo el bloque relevante.
+
+**Estado de la propuesta:** PROPUESTO; el usuario aún no ha acordado recortes.
 **Proyecto:** Ejemplo ilustrativo sin cliente real
 **Repositorio/commit analizado:** No aplicable, muestra ficticia
 **Fecha y zona horaria:** 2026-10-26, America/Mexico_City
@@ -10,7 +12,7 @@
 **Fuentes comerciales internas consultadas:** ninguna
 **Limitaciones:** Ejemplo para probar formato; nunca usar como evidencia de mercado
 
-## 1. Lista de decisiones: una fila por feature (entregable principal)
+## 1. Lista de decisiones recomendadas: una fila por feature
 
 | ID | Feature / rol de negocio | Hoy (evidencia de código) | Cambio concreto para versión mínima | Acción | Valor de mercado (fuente / certeza) | Efecto en negocio | Prioridad |
 |---|---|---|---|---|---|---|---|
@@ -64,3 +66,11 @@ Sin precios ni costos reales, no hay evaluación cuantitativa.
 
 - [x] IDs coinciden en tabla y fichas.
 - [ ] Mercado debe investigarse en un caso real.
+
+## Continuación de la conversación (ilustrativa)
+
+**Agente:** Recomiendo validar primero el reporte estándar de F-001 antes de invertir en plantillas. Es una hipótesis: todavía no hay evidencia de compradores. ¿Prefieres probar ese alcance o mantener plantillas porque tienes un compromiso comercial?
+
+**Usuario:** Probemos el reporte estándar, pero deja las exportaciones pendientes de revisar.
+
+**Agente:** ACORDADO: validar el reporte estándar de F-001. PENDIENTE: alcance de exportaciones. Las demás propuestas siguen sin acordarse; no se aplicaron cambios. El siguiente paso es comprobar con un comprador si el reporte le permite decidir sin plantillas.

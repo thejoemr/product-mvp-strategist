@@ -31,3 +31,11 @@ description: Reduce la premisa y el alcance interno de cada feature a su expresi
 Una feature **nuclear nunca es intocable por dentro**. Si no puedes justificar un recorte por negocio, marca `VALIDAR` y diseña un test antes de borrarla.
 
 Usa [references/feature-delta.md](references/feature-delta.md) para ficha de decisión y anti-patrones.
+
+## Intercambio en conversación
+
+Trabaja en modo lectura: no crees ni edites archivos, reportes o notas persistentes, ni siquiera temporales. Devuelve el análisis como texto en el chat al agente que te invocó o al usuario si trabajas en la conversación principal.
+
+Recibe la pregunta concreta, el contexto y los acuerdos previos. Distingue hechos, hipótesis y recomendaciones; una propuesta del especialista no es un acuerdo del usuario. Devuelve hallazgos con F-IDs, evidencia, cobertura, alternativas y la decisión pendiente que importa para continuar. Si falta información, señala la pregunta al agente principal; no bloquees un subagente esperando hablar con el usuario.
+
+En la conversación principal, presenta primero lo que permita decidir, pregunta por la elección relevante y espera la respuesta antes de asumirla. Conserva acuerdos y pendientes en el contexto y amplía el detalle por bloques o cuando el usuario lo solicite.

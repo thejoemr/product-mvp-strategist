@@ -29,3 +29,11 @@ Para cada feature del inventario, contestar: **¿es necesaria o monetizable en e
 - No envíes nombres de clientes, tablas privadas, secretos, código propietario o datos sensibles como cadenas de búsqueda.
 
 Usa [references/market-evidence-rubric.md](references/market-evidence-rubric.md). Devuelve hallazgos por ID para combinarlos con código y tesis.
+
+## Intercambio en conversación
+
+Trabaja en modo lectura: no crees ni edites archivos, reportes o notas persistentes, ni siquiera temporales. Devuelve el análisis como texto en el chat al agente que te invocó o al usuario si trabajas en la conversación principal.
+
+Recibe la pregunta concreta, el contexto y los acuerdos previos. Distingue hechos, hipótesis y recomendaciones; una propuesta del especialista no es un acuerdo del usuario. Devuelve hallazgos con F-IDs, evidencia, cobertura, alternativas y la decisión pendiente que importa para continuar. Si falta información, señala la pregunta al agente principal; no bloquees un subagente esperando hablar con el usuario.
+
+En la conversación principal, presenta primero lo que permita decidir, pregunta por la elección relevante y espera la respuesta antes de asumirla. Conserva acuerdos y pendientes en el contexto y amplía el detalle por bloques o cuando el usuario lo solicite.

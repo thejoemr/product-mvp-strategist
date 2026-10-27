@@ -1,6 +1,6 @@
 # Product MVP Strategist
 
-> Un equipo de 6 agentes y 6 skills para Claude Code que convierte las funcionalidades implementadas de un producto en un plan de **MVP comercializable**, con decisiones feature por feature y evidencia real de código y mercado.
+> Un equipo de 6 agentes y 6 skills para Claude Code que analiza código y mercado y conversa con el usuario para acordar un **MVP comercializable**, feature por feature, sin generar archivos de auditoría.
 
 **Objetivo:** reducir alcance injustificado, *incluido el exceso dentro de las features esenciales*, preservando el problema que el cliente paga por resolver. No promete rentabilidad: propone hipótesis que deben contrastarse con compradores, precios y costos.
 
@@ -36,7 +36,7 @@ Ejecuta el instalador **desde la raíz del proyecto que quieres auditar**. Requi
 
 | Comando | Efecto |
 |---|---|
-| `init` | Copia agentes, skills y plantillas en `.claude/`, sin reemplazar personalizaciones |
+| `init` | Copia agentes, skills y referencias en `.claude/`, sin reemplazar personalizaciones |
 | `update` | Actualiza archivos del paquete si no fueron modificados por el usuario |
 | `doctor` | Verifica integridad con SHA-256 |
 | `uninstall` | Quita solamente archivos instalados por el paquete |
@@ -62,7 +62,17 @@ Abre Claude Code en el proyecto y ejecuta:
 /product-mvp-audit Vendo a empresas medianas de México; prioriza conseguir los primeros clientes de pago
 ```
 
-También puedes ejecutar `claude --agent product-mvp-strategist` y pedir la auditoría en lenguaje natural.
+El comando se ejecuta en la **conversación principal**, conservando el historial para discutir los hallazgos y decidir qué sigue. No utiliza context: fork.
+
+También puedes ejecutar `claude --agent product-mvp-strategist` para mantener una sesión conversacional con el agente, o pedir a Claude que lo invoque como subagente interno para una pregunta concreta. En ese caso devuelve sus resultados al agente principal, que los presenta y conversa contigo.
+
+Para instalar **esta copia local modificada** en otro proyecto, desde esta carpeta:
+
+```powershell
+node .\bin\cli.js init --target "C:\ruta\a\tu-producto"
+```
+
+Si ya existe una instalación, usa update en lugar de init. El comando npx desde GitHub descarga la versión remota; los cambios de esta copia son locales hasta que se publiquen.
 
 ### Qué hace
 
@@ -71,19 +81,22 @@ También puedes ejecutar `claude --agent product-mvp-strategist` y pedir la audi
 3. **Investiga el mercado**: alternativas, ofertas, planes, reseñas, testimonios y señales de dolor real. Diferencia «lo ofrece un competidor» de «alguien pagó por ello».
 4. **Cuestiona el alcance de cada feature**, incluso si es indispensable: roles, estados, flujos, modos, configurabilidad y excepciones potencialmente excesivos.
 5. **Reconstruye un MVP integrado** conservando el recorrido completo desde primer valor hasta servicio/cobro y costos sostenibles.
-6. **Genera un plan específico por feature**, con hechos, hipótesis, acciones concretas, riesgos, pruebas, prioridades y fuentes.
+6. **Presenta recomendaciones por bloques en el chat** con hechos, hipótesis, acciones, riesgos y fuentes. El usuario y el agente acuerdan las decisiones y los siguientes pasos.
 
-### Entregables de una auditoría
+### Flujo de entrada y salida
 
-Dentro del proyecto analizado, en `product-audit/`:
+La entrada es tu pregunta, el repositorio y el contexto ya acordado. La salida es texto en la conversación:
 
-| Archivo | Uso |
-|---|---|
-| `feature-mvp-plan.md` | Inventario exhaustivo con `ACTUAL → MÍNIMO`, recortes justificados y prioridades |
-| `feature-actions.csv` | Decisiones consultables y filtrables por feature |
-| `market-evidence.md` | Bitácora de investigación con URLs reales, fechas, región y nivel de evidencia |
+1. Una primera lectura del producto, comprador, resultado pagable y límites de inspección.
+2. Hallazgos con evidencia de código y mercado, alternativas y recomendaciones HOY → MÍNIMO.
+3. Una pregunta concreta para acordar la siguiente decisión: qué validar, conservar, simplificar o investigar.
+4. Una síntesis de acuerdos y pendientes que se actualiza con tus respuestas.
 
-El agente **no modifica el código del producto**; solamente escribe los informes solicitados. Si no puede investigar online, declara `SIN_ACCESO_WEB` y no inventa fuentes. No envía contenido privado del código a buscadores públicos. Los hallazgos comerciales son hipótesis hasta contar con compradores y mediciones reales.
+El agente distingue PROPUESTO, ACORDADO, DESCARTADO y PENDIENTE por feature. Una recomendación no se considera aprobada por silencio y ningún recorte se implementa durante la auditoría. Si pides un análisis completo, puede cubrir todas las features por bloques dentro del chat.
+
+**No crea archivos, reportes, CSV, bitácoras ni carpetas de auditoría, tampoco temporales.** Agente y especialistas operan en modo lectura y devuelven sus resultados en sus respuestas. Exportar o implementar corresponde a una tarea separada fuera del modo de análisis. El instalador sí copia las definiciones del paquete a .claude/; eso no es una salida de auditoría.
+
+Si no puede investigar online, declara SIN_ACCESO_WEB y no inventa fuentes. No envía contenido privado del código a buscadores públicos. Los hallazgos comerciales son hipótesis hasta contar con compradores y mediciones reales.
 
 ## Componentes
 
@@ -104,12 +117,12 @@ El agente **no modifica el código del producto**; solamente escribe los informe
     feature-scope-reduction/
     commercial-mvp-design/
   product-mvp/
-    templates/                    # contratos de entregables
+    templates/                    # guías de conversación e intercambio
     scripts/                      # validadores Python opcionales
     examples/
 ```
 
-El orquestador coordina los cinco especialistas cuando Claude Code permite invocarlos. Cada especialista trabaja en modo lectura, con las herramientas que necesita. Los scripts de validación necesitan Python 3.10+ solo si deseas ejecutarlos; **Python no es necesario para instalar**.
+El orquestador coordina los cinco especialistas cuando Claude Code permite invocarlos y aportan valor. Cada especialista devuelve texto al principal y trabaja en modo lectura. Si la delegación no está disponible, se aplican las skills directamente. Los scripts Python son herramientas de mantenimiento del paquete y de su ejemplo detallado; no se ejecutan durante la conversación ni requieren crear un informe. **Python no es necesario para instalar**.
 
 ## Desarrollo y verificación
 
@@ -126,6 +139,8 @@ node bin/cli.js init --target ./mi-proyecto --dry-run
 ```
 
 La suite verifica seguridad de instalación, actualización, conflictos, copias de seguridad, desinstalación y contratos estáticos. **No equivale a una prueba de ejecución de agentes en Claude Code ni valida la calidad de un análisis real.**
+
+El comando permanece en la conversación principal según la [configuración oficial de skills](https://code.claude.com/docs/en/skills). La separación entre el agente principal y los resultados internos sigue el [modelo oficial de subagentes](https://code.claude.com/docs/en/sub-agents).
 
 ## Publicación
 
