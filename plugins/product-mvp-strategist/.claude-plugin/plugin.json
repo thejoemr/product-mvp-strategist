@@ -1,0 +1,17 @@
+{
+  "name": "product-mvp-strategist",
+  "version": "1.2.0",
+  "description": "Análisis conversacional de producto y mercado para acordar un MVP comercializable, sin generar archivos.",
+  "author": {
+    "name": "thejoemr"
+  },
+  "homepage": "https://github.com/thejoemr/product-mvp-strategist",
+  "repository": "https://github.com/thejoemr/product-mvp-strategist",
+  "license": "MIT",
+  "keywords": [
+    "product-strategy",
+    "mvp",
+    "skills",
+    "agents"
+  ]
+}

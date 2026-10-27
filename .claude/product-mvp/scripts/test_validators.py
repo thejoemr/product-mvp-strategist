@@ -7,7 +7,7 @@ from validate_feature_plan import validate as validate_markdown
 from validate_package import validate as validate_package
 
 ROOT = Path(__file__).resolve().parents[3]
-SAMPLE = ROOT / '.claude/product-mvp/examples/feature-mvp-plan.example.md'
+SAMPLE = ROOT / 'plugins/product-mvp-strategist/product-mvp/examples/feature-mvp-plan.example.md'
 
 
 class PackageTests(unittest.TestCase):
@@ -18,6 +18,9 @@ class PackageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             copy = Path(directory)
             shutil.copytree(ROOT / '.claude', copy / '.claude')
+            shutil.copytree(ROOT / 'plugins', copy / 'plugins')
+            shutil.copytree(ROOT / '.claude-plugin', copy / '.claude-plugin')
+            shutil.copyfile(ROOT / 'package.json', copy / 'package.json')
             shutil.copyfile(ROOT / 'README.md', copy / 'README.md')
             target = copy / relative
             content = target.read_text(encoding='utf-8')
@@ -30,7 +33,7 @@ class PackageTests(unittest.TestCase):
             for tool in ('Write', 'Edit', 'Bash', 'PowerShell', 'NotebookEdit'):
                 with self.subTest(agent=agent, tool=tool):
                     issues = self.package_variant(
-                        f'.claude/agents/{agent}.md', 'tools: Read,', f'tools: {tool}, Read,')
+                        f'plugins/product-mvp-strategist/agents/{agent}.md', 'tools: Read,', f'tools: {tool}, Read,')
                     self.assertTrue(any('contrato de solo lectura' in issue for issue in issues))
 
     def test_skills_stay_in_main_conversation(self):
@@ -38,9 +41,32 @@ class PackageTests(unittest.TestCase):
             for field, value in (('context', 'fork'), ('agent', 'product-mvp-strategist'), ('background', 'false')):
                 with self.subTest(skill=skill, field=field):
                     issues = self.package_variant(
-                        f'.claude/skills/{skill}/SKILL.md',
+                        f'plugins/product-mvp-strategist/skills/{skill}/SKILL.md',
                         f'name: {skill}\n', f'name: {skill}\n{field}: {value}\n')
                     self.assertTrue(any('conversación principal' in issue for issue in issues))
+
+    def test_marketplace_must_point_to_bundled_plugin(self):
+        issues = self.package_variant(
+            '.claude-plugin/marketplace.json', './plugins/product-mvp-strategist', './missing-plugin')
+        self.assertTrue(any('Source del marketplace' in issue for issue in issues))
+
+    def test_plugin_versions_must_match(self):
+        issues = self.package_variant(
+            'plugins/product-mvp-strategist/.claude-plugin/plugin.json', '"version": "1.2.0"', '"version": "0.0.0"')
+        self.assertTrue(any('Versiones' in issue for issue in issues))
+
+    def test_bundled_references_must_exist(self):
+        issues = self.package_variant(
+            'plugins/product-mvp-strategist/skills/product-mvp-audit/SKILL.md',
+            '${CLAUDE_PLUGIN_ROOT}/agents/product-mvp-strategist.md',
+            '${CLAUDE_PLUGIN_ROOT}/agents/missing.md')
+        self.assertTrue(any('recurso de plugin inexistente' in issue for issue in issues))
+
+    def test_agent_skills_require_plugin_namespace(self):
+        issues = self.package_variant(
+            'plugins/product-mvp-strategist/agents/feature-cartographer.md',
+            '  - product-mvp-strategist:repository-feature-mapping', '  - repository-feature-mapping')
+        self.assertTrue(any('skills deben ser' in issue for issue in issues))
 
     def test_valid_sample_markdown(self):
         self.assertEqual([], validate_markdown(SAMPLE))

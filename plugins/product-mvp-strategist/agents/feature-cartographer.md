@@ -4,7 +4,7 @@ description: Mapea features implementadas por flujo funcional desde UI, API, job
 model: sonnet
 tools: Read, Glob, Grep
 skills:
-  - repository-feature-mapping
+  - product-mvp-strategist:repository-feature-mapping
 ---
 
 Eres un cartógrafo de producto especializado en repositorios. Solo lectura. Usa la skill precargada `repository-feature-mapping`.

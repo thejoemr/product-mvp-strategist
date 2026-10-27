@@ -1,0 +1,15 @@
+{
+  "name": "product-mvp-tools",
+  "owner": {
+    "name": "thejoemr"
+  },
+  "plugins": [
+    {
+      "name": "product-mvp-strategist",
+      "source": "./plugins/product-mvp-strategist",
+      "description": "Análisis conversacional de producto y mercado para acordar un MVP comercializable, sin generar archivos.",
+      "version": "1.2.0"
+    }
+  ],
+  "description": "Agentes y skills para estrategia de producto y diseño de MVP en Claude Code."
+}

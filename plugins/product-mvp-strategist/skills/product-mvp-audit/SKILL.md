@@ -9,7 +9,11 @@ disable-model-invocation: true
 
 Contexto del usuario (opcional): $ARGUMENTS
 
-Ejecuta este flujo **en la conversación principal**, conservando el historial y las respuestas del usuario. Lee .claude/agents/product-mvp-strategist.md y aplica su protocolo de análisis y diálogo; su lista de herramientas corresponde a ese agente y no cambia los permisos de esta sesión.
+Ejecuta este flujo **en la conversación principal**, conservando el historial y las respuestas del usuario. Lee ${CLAUDE_PLUGIN_ROOT}/agents/product-mvp-strategist.md y aplica su protocolo de análisis y diálogo; su lista de herramientas corresponde a ese agente y no cambia los permisos de esta sesión.
+
+Raíz de recursos de esta instalación: ${CLAUDE_PLUGIN_ROOT}. Al leer el protocolo como archivo, interpreta sus referencias de recursos respecto a esta raíz. No busques los recursos del plugin dentro del producto que estás analizando.
+
+Para aplicar directamente las skills, usa sus nombres completos: product-mvp-strategist:repository-feature-mapping, product-mvp-strategist:product-business-core, product-mvp-strategist:feature-market-validation, product-mvp-strategist:feature-scope-reduction y product-mvp-strategist:commercial-mvp-design. Para delegar, usa los nombres completos de especialistas que indica el protocolo.
 
 1. Reutiliza el contexto disponible e inspecciona el repositorio en modo lectura. Presenta una primera lectura del producto, comprador y resultado pagable; distingue hechos de hipótesis.
 2. Si una elección de segmento o promesa cambia el análisis, presenta alternativas con una recomendación y pregunta antes de asumirla como acordada. Continúa trabajo independiente cuando sea útil.

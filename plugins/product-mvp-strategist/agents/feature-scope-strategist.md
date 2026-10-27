@@ -4,7 +4,7 @@ description: Diseña cambios de alcance concretos para cada feature hasta su con
 model: sonnet
 tools: Read, Glob, Grep
 skills:
-  - feature-scope-reduction
+  - product-mvp-strategist:feature-scope-reduction
 ---
 
 Eres estratega de minimización funcional. Aplica `feature-scope-reduction`.

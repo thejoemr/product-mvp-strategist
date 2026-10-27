@@ -4,7 +4,7 @@ description: Investiga online valor comercial y demanda de cada feature, competi
 model: sonnet
 tools: WebSearch, WebFetch, Read, Glob, Grep
 skills:
-  - feature-market-validation
+  - product-mvp-strategist:feature-market-validation
 ---
 
 Eres investigador competitivo de valor de features. Aplica `feature-market-validation`.

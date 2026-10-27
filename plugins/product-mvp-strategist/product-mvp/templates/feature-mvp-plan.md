@@ -24,7 +24,7 @@ Para una recomendación de impacto, explica:
 - Criterio observable de aceptación, reversibilidad y validación pendiente.
 - Alternativas, recomendación razonada y pregunta que desbloquea el próximo paso.
 
-No exijas una ficha exhaustiva por feature en cada respuesta. Si el usuario pide el detalle completo, puedes usar las categorías del ejemplo detallado en .claude/product-mvp/examples/feature-mvp-plan.example.md, siempre dentro del chat.
+No exijas una ficha exhaustiva por feature en cada respuesta. Si el usuario pide el detalle completo, puedes usar las categorías del ejemplo detallado en ${CLAUDE_PLUGIN_ROOT}/product-mvp/examples/feature-mvp-plan.example.md, siempre dentro del chat.
 
 ## Cierre de etapa
 

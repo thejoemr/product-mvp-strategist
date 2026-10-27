@@ -30,7 +30,7 @@ Para hipótesis críticas, especifica segmento, pregunta, test, umbral observabl
 
 ## Salida
 
-Devuelve en el chat una síntesis del MVP candidato o acordado, la ruta de monetización, costos conocidos y experimentos prioritarios. Vincula F-IDs, fuentes fechadas y certeza; diferencia recomendaciones de acuerdos del usuario. Usa .claude/product-mvp/templates/feature-mvp-plan.md como guía conversacional. No crees archivos. Presenta alternativas y la siguiente decisión para que el usuario y el agente principal acuerden cómo continuar.
+Devuelve en el chat una síntesis del MVP candidato o acordado, la ruta de monetización, costos conocidos y experimentos prioritarios. Vincula F-IDs, fuentes fechadas y certeza; diferencia recomendaciones de acuerdos del usuario. Usa ${CLAUDE_PLUGIN_ROOT}/product-mvp/templates/feature-mvp-plan.md como guía conversacional. No crees archivos. Presenta alternativas y la siguiente decisión para que el usuario y el agente principal acuerden cómo continuar.
 
 Lee [references/revenue-gates.md](references/revenue-gates.md).
 

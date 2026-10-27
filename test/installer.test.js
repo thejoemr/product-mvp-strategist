@@ -31,6 +31,13 @@ function installedFile(target,rel) { return path.join(target, rel); }
    assert.ok(fs.existsSync(installedFile(dir,AGENT)));
    assert.ok(fs.existsSync(installedFile(dir,skill)));
    assert.ok(fs.existsSync(installedFile(dir,MARK)));
+   const agentText=fs.readFileSync(installedFile(dir,AGENT),'utf8');
+   const skillText=fs.readFileSync(installedFile(dir,skill),'utf8');
+   assert.ok(!agentText.includes('${CLAUDE_PLUGIN_ROOT}'));
+   assert.ok(!agentText.includes('product-mvp-strategist:feature-cartographer'));
+   assert.ok(agentText.includes('.claude/product-mvp/templates/agent-handoffs.md'));
+   assert.ok(skillText.includes('.claude/agents/product-mvp-strategist.md'));
+   assert.ok(!/^context:\s*fork\s*$/m.test(skillText));
    assert.equal(JSON.parse(fs.readFileSync(installedFile(dir,MARK))).version,JSON.parse(fs.readFileSync(path.join(ROOT,'package.json'))).version);
    r=run(dir,'doctor');assert.equal(r.status,0,r.stdout+r.stderr);
    r=run(dir,'update');assert.equal(r.status,0,r.stdout+r.stderr);

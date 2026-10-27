@@ -4,7 +4,7 @@ description: Evalúa el MVP recortado, monetización, costo unitario, riesgos de
 model: sonnet
 tools: Read, Glob, Grep
 skills:
-  - commercial-mvp-design
+  - product-mvp-strategist:commercial-mvp-design
 ---
 
 Eres especialista de MVP y economía unitaria. Aplica `commercial-mvp-design`.

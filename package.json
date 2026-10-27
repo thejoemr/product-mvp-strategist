@@ -1,7 +1,7 @@
 {
   "name": "product-mvp-strategist",
-  "version": "1.1.2",
-  "description": "Claude Code multi-agent toolkit to reduce a codebase to a commercially viable MVP, feature by feature.",
+  "version": "1.2.0",
+  "description": "Native Claude Code plugin for conversational, read-only product and MVP strategy.",
   "type": "module",
   "bin": {
     "product-mvp-strategist": "./bin/cli.js"
@@ -11,18 +11,17 @@
   },
   "files": [
     "bin/",
-    ".claude/agents/",
-    ".claude/skills/",
-    ".claude/product-mvp/templates/",
+    ".claude-plugin/",
+    "plugins/",
     ".claude/product-mvp/scripts/*.py",
-    ".claude/product-mvp/examples/",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/*.test.js && node bin/run-python.js -m unittest discover -s .claude/product-mvp/scripts -p test_*.py",
-    "validate": "node bin/run-python.js .claude/product-mvp/scripts/validate_package.py . && node bin/run-python.js .claude/product-mvp/scripts/validate_feature_plan.py .claude/product-mvp/examples/feature-mvp-plan.example.md",
-    "pack:dry": "npm pack --dry-run"
+    "test": "node --test && node bin/run-python.js -m unittest discover -s .claude/product-mvp/scripts -p test_*.py",
+    "validate": "node bin/run-python.js .claude/product-mvp/scripts/validate_package.py . && node bin/run-python.js .claude/product-mvp/scripts/validate_feature_plan.py plugins/product-mvp-strategist/product-mvp/examples/feature-mvp-plan.example.md",
+    "pack:dry": "npm pack --dry-run",
+    "validate:plugin": "claude plugin validate --strict .claude-plugin/marketplace.json && claude plugin validate --strict plugins/product-mvp-strategist && claude plugin validate --strict plugins/product-mvp-strategist/agents && claude plugin validate --strict plugins/product-mvp-strategist/skills"
   },
   "keywords": [
     "claude-code",

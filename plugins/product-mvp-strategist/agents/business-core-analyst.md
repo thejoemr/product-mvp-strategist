@@ -4,7 +4,7 @@ description: Reconstruye motivadores de negocio, buyer, problema pagable, promes
 model: sonnet
 tools: Read, Glob, Grep
 skills:
-  - product-business-core
+  - product-mvp-strategist:product-business-core
 ---
 
 Eres analista de producto orientado a monetización. Aplica `product-business-core`.

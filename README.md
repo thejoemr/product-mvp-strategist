@@ -4,75 +4,72 @@
 
 **Objetivo:** reducir alcance injustificado, *incluido el exceso dentro de las features esenciales*, preservando el problema que el cliente paga por resolver. No promete rentabilidad: propone hipótesis que deben contrastarse con compradores, precios y costos.
 
-## Instalación con `npx`
+## Instalar como plugin nativo (recomendado)
 
-**Desde GitHub (disponible ahora):**
-
-```bash
-npx --yes github:thejoemr/product-mvp-strategist init
-```
-
-**Desde npm, solo si el paquete `product-mvp-strategist` fue publicado en el registro:**
-
-```bash
-npx --yes product-mvp-strategist@latest init
-```
-
-El primer comando utiliza el repositorio público de GitHub y requiere **Node.js, npm y Git instalados**. No necesita una publicación en el registro npm. El segundo comando **todavía no está disponible** hasta que se publique en npm. Para instalar desde una copia local ya descargada:
-
-```bash
-node bin/cli.js init
-```
-
-Si `npx github:...` no funciona en tu entorno, utiliza la forma explícita de npm:
-
-```bash
-npm exec --yes --package=github:thejoemr/product-mvp-strategist -- product-mvp-strategist init
-```
-
-Ejecuta el instalador **desde la raíz del proyecto que quieres auditar**. Requiere Node.js 18.18 o posterior y Claude Code. El instalador no necesita dependencias de npm, no modifica `CLAUDE.md` ni `settings.json`, ni ejecuta comandos sobre el código del producto.
-
-### Comandos del instalador
-
-| Comando | Efecto |
-|---|---|
-| `init` | Copia agentes, skills y referencias en `.claude/`, sin reemplazar personalizaciones |
-| `update` | Actualiza archivos del paquete si no fueron modificados por el usuario |
-| `doctor` | Verifica integridad con SHA-256 |
-| `uninstall` | Quita solamente archivos instalados por el paquete |
-
-Opciones: `--target /ruta/al/proyecto`, `--global` (instala en `~/.claude/`), `--dry-run`, `--force` (respalda los archivos conflictivos antes de sobrescribirlos o retirarlos), `--help`, `--version`.
-
-Ejemplos:
-
-```bash
-npx --yes github:thejoemr/product-mvp-strategist init --dry-run
-npx --yes github:thejoemr/product-mvp-strategist init --target ./mi-producto
-npx --yes github:thejoemr/product-mvp-strategist init --global
-npx --yes github:thejoemr/product-mvp-strategist doctor
-```
-
-El instalador se niega a sobrescribir archivos desconocidos y aborta sin cambios si detecta colisiones. Con `--force` deja copias en `.claude/product-mvp-user-backups/`. La desinstalación preserva cualquier archivo ajeno al paquete.
-
-## Ejecutar en Claude Code
-
-Abre Claude Code en el proyecto y ejecuta:
+En el chat de Claude Code, ejecuta:
 
 ```text
-/product-mvp-audit Vendo a empresas medianas de México; prioriza conseguir los primeros clientes de pago
+/plugin install product-mvp-strategist --marketplace thejoemr/product-mvp-strategist#codex/conversational-mvp-workflow
 ```
 
-El comando se ejecuta en la **conversación principal**, conservando el historial para discutir los hallazgos y decidir qué sigue. No utiliza context: fork.
+Esta versión está disponible en la rama indicada. Cuando se integre en main, podrá omitirse el sufijo #codex/conversational-mvp-workflow.
 
-También puedes ejecutar `claude --agent product-mvp-strategist` para mantener una sesión conversacional con el agente, o pedir a Claude que lo invoque como subagente interno para una pregunta concreta. En ese caso devuelve sus resultados al agente principal, que los presenta y conversa contigo.
+El comando agrega el marketplace y abre la instalación del plugin. Requiere Claude Code 2.1.275 o posterior. Elige si lo quieres para tu usuario o para el proyecto y acepta la instalación. No requiere Node.js, npm ni Python.
 
-Para instalar **esta copia local modificada** en otro proyecto, desde esta carpeta:
+También puedes usar la instalación en dos pasos:
+
+```text
+/plugin marketplace add thejoemr/product-mvp-strategist#codex/conversational-mvp-workflow
+/plugin install product-mvp-strategist@product-mvp-tools
+```
+
+Recarga los plugins con /reload-plugins o inicia una nueva sesión de Claude Code. Después ejecuta:
+
+```text
+/product-mvp-strategist:product-mvp-audit Vendo a empresas medianas de México; prioriza los primeros clientes de pago
+```
+
+El comando conserva la conversación principal. Los especialistas devuelven sus resultados internos y el agente conversa contigo para acordar decisiones y próximos pasos.
+
+El plugin también permite iniciar una sesión con el agente:
+
+```bash
+claude --agent product-mvp-strategist:product-mvp-strategist
+```
+
+### Actualizar o desinstalar
+
+Usa /plugin para administrar el plugin desde las pestañas Installed y Marketplaces. Actualiza primero el marketplace y después el plugin. Si fijaste la instalación a una rama, las actualizaciones siguen esa rama.
+
+En terminal:
+
+```bash
+claude plugin marketplace update product-mvp-tools
+claude plugin update product-mvp-strategist@product-mvp-tools
+claude plugin uninstall product-mvp-strategist@product-mvp-tools
+```
+
+### Si ya lo instalaste mediante npx
+
+El plugin usa comandos con prefijo, como /product-mvp-strategist:product-mvp-audit. La instalación anterior usa /product-mvp-audit y no se elimina automáticamente. Para evitar que Claude descubra ambas copias, desinstala la anterior desde la carpeta de esta copia local del repositorio:
+
+```powershell
+node .\bin\cli.js uninstall --target "C:\ruta\a\tu-producto"
+```
+
+Si la instalación anterior fue global, usa --global en lugar de --target "C:\ruta\a\tu-producto". El desinstalador conserva archivos ajenos y se detiene ante personalizaciones; no uses --force salvo que quieras respaldarlas y retirarlas.
+
+### Instalador anterior (opcional)
+
+Se conserva para instalaciones sin plugins y actualizaciones de copias anteriores. Requiere Node.js 18.18+ y no modifica CLAUDE.md ni settings.json.
+
+Desde la carpeta de este repositorio:
 
 ```powershell
 node .\bin\cli.js init --target "C:\ruta\a\tu-producto"
 ```
 
-Si ya existe una instalación, usa update en lugar de init. El comando npx desde GitHub descarga la versión remota; los cambios de esta copia son locales hasta que se publiquen.
+Acepta init, update, doctor, uninstall, --global, --dry-run y --force (respalda personalizaciones). En esta modalidad el comando sigue siendo /product-mvp-audit. La definición del plugin es la única fuente; el instalador adapta rutas y nombres al copiarla a .claude/.
 
 ### Qué hace
 
@@ -101,34 +98,26 @@ Si no puede investigar online, declara SIN_ACCESO_WEB y no inventa fuentes. No e
 ## Componentes
 
 ```text
-.claude/
-  agents/
-    product-mvp-strategist.md      # orquestador
-    feature-cartographer.md       # inventario funcional desde el código
-    business-core-analyst.md      # propósito de negocio
-    market-value-researcher.md    # investigación online
-    feature-scope-strategist.md   # reducción de alcance por feature
-    unit-economics-reviewer.md   # viabilidad económica del MVP
-  skills/
-    product-mvp-audit/SKILL.md    # comando /product-mvp-audit
-    repository-feature-mapping/
-    product-business-core/
-    feature-market-validation/
-    feature-scope-reduction/
-    commercial-mvp-design/
-  product-mvp/
-    templates/                    # guías de conversación e intercambio
-    scripts/                      # validadores Python opcionales
-    examples/
+.claude-plugin/
+  marketplace.json
+plugins/product-mvp-strategist/
+  .claude-plugin/plugin.json
+  agents/                         # coordinador y cinco especialistas
+  skills/                         # seis skills, incluido product-mvp-audit
+  product-mvp/templates/          # guías de conversación e intercambio
+  product-mvp/examples/
+.claude/product-mvp/scripts/      # verificaciones de mantenimiento
+bin/                             # instalador anterior, fuera del plugin
 ```
 
-El orquestador coordina los cinco especialistas cuando Claude Code permite invocarlos y aportan valor. Cada especialista devuelve texto al principal y trabaja en modo lectura. Si la delegación no está disponible, se aplican las skills directamente. Los scripts Python son herramientas de mantenimiento del paquete y de su ejemplo detallado; no se ejecutan durante la conversación ni requieren crear un informe. **Python no es necesario para instalar**.
+El plugin contiene únicamente definiciones, referencias y ejemplos. No incluye hooks, servidores MCP ni ejecutables. Los agentes operan en modo lectura. Si la delegación no está disponible, el principal aplica las skills directamente. Python solo es necesario para ejecutar las verificaciones de mantenimiento.
 
 ## Desarrollo y verificación
 
 ```bash
 npm test
 npm run validate
+npm run validate:plugin
 npm pack --dry-run
 ```
 
@@ -144,7 +133,7 @@ El comando permanece en la conversación principal según la [configuración ofi
 
 ## Publicación
 
-Consulta [PUBLISHING.md](PUBLISHING.md) para crear el repositorio independiente en GitHub, verificar el comando `npx` desde el repositorio y, opcionalmente, publicar en npm.
+Consulta [PUBLISHING.md](PUBLISHING.md) para mantener el marketplace, publicar actualizaciones y comprobar la instalación nativa.
 
 ## Licencia
 

@@ -1,6 +1,6 @@
 ## Auditoría de producto MVP (solo bajo petición)
 
-Invoca /product-mvp-audit para analizar el producto en la conversación principal, o inicia Claude Code con claude --agent product-mvp-strategist para conversar con el agente durante la sesión.
+Invoca /product-mvp-strategist:product-mvp-audit para analizar el producto en la conversación principal, o inicia Claude Code con claude --agent product-mvp-strategist:product-mvp-strategist para conversar con el agente durante la sesión.
 También puedes delegar una pregunta concreta a product-mvp-strategist: devuelve hallazgos internos al principal para que este los discuta con el usuario.
 
 La auditoría es de solo lectura y su salida es texto en el chat. No crear archivos, reportes, bitácoras ni carpetas; no modificar código, datos ni infraestructura.
